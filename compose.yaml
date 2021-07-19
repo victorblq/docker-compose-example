@@ -1,0 +1,48 @@
+services:
+  mongo:
+    image: mongo
+    container_name: mongo
+    ports:
+      - 27017:27017
+    networks:
+      custom_network:
+        aliases:
+          - mongodb.pigmeo.dev
+    volumes:
+      - mongo_storage:/data/db
+
+  business:
+    image: business
+    container_name: business
+    ports:
+      - 8085:8085
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        app: business
+    networks:
+      custom_network:
+        aliases:
+          - business.pigmeo.dev
+
+  partner-integrator:
+    image: partner-integrator
+    container_name: partner-integrator
+    ports:
+      - 8090:8090
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        app: partner-integrator
+    networks:
+      custom_network:
+        aliases:
+          - partner-integrator.pigmeo.dev
+
+networks:
+  custom_network:
+
+volumes:
+  mongo_storage:
